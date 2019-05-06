@@ -5,8 +5,23 @@ var drawer;
 var radius;
 var weight;
 
+var PARAMS;
+var SETTINGS;
+var SLIDERWIDTH;
+var XMARGIN;
+var VERTSEP;
+var SPACING;
 
 function box(depth) {
+	push();
+	translate(0, 0, radius);
+	stroke("blue", 128);
+	fill(255, 0, 0, 128);
+	box(weight * depth * 0.2);
+	pop();
+}
+
+function box2(depth) {
 	push();
 	translate(0, 0, radius);
 	noStroke();
@@ -14,6 +29,7 @@ function box(depth) {
 	box(weight * depth * 0.2);
 	pop();
 }
+
 
 function renderFrac(frac, depth, scale) {
 	drawer(depth, radius);
@@ -29,12 +45,46 @@ function renderFrac(frac, depth, scale) {
 }
 
 
+function makeControls(fractal) {
+	var y = 10;
+	for( var i = 0; i < fractal.length; i++ ) {
+		fractal[i]['controls'] = makeControlSet(y, fractal[i])
+		y += PARAMS.length * VERTSEP + SPACING;
+	}
+}
+
+function makeControlSet(y0, f) {
+	var ctrls = {};
+	var y = y0;
+	for( var i = 0; i < PARAMS.length; i++ ) {
+		var p = PARAMS[i];
+		ctrls[p] = createSlider(SETTINGS[p]['min'], SETTINGS[p]['max'], f[p], 0);
+		ctrls[p].position(XMARGIN, y);
+		ctrls[p].style('width', SLIDERWIDTH);
+		y += VERTSEP;
+	}
+	return ctrls;
+}
+
+
 function setup() {
 
-	createCanvas(windowWidth,windowHeight,WEBGL);
+	createCanvas(800,800,WEBGL);
 
 	radius = 400;
 	weight = 10;
+
+	SLIDERWIDTH = '200px';
+	VERTSEP = 20;
+	XMARGIN = 10;
+	SPACING = 8;
+
+	PARAMS = ['dip', 'twist', 'scale'];
+	SETTINGS = {
+		dip: { min: 0, max: PI, value: 0 },
+		twist: { min: 0, max: PI, value: 0 },
+		scale: { min: 0, max: 2, value: 1 }
+	};
 
 	sphereFrac = [
 		{
@@ -49,6 +99,8 @@ function setup() {
 		}
 	];
 
+	makeControls(sphereFrac);
+
 	drawer = box;
 }
 
@@ -57,6 +109,12 @@ function setup() {
 
 function draw() {
 	background(255);
+
+	sphereFrac.forEach((f) => {
+		PARAMS.forEach((p) => {
+			f[p] = f.controls[p].value();
+		});
+	});
 
 	renderFrac(sphereFrac, 8, 1.0);
 
