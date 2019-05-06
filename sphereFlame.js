@@ -15,9 +15,11 @@ var SPACING;
 function box(depth) {
 	push();
 	translate(0, 0, radius);
-	stroke("blue", 128);
-	fill(255, 0, 0, 128);
-	box(weight * depth * 0.2);
+	stroke(50,50,0, 128);
+	strokeWidth(10 * depth);
+	//fill(255, 0, 0, 128);
+	//box(weight * depth * 0.2);
+	sphere(weight * depth * 0.2);
 	pop();
 }
 
@@ -97,7 +99,7 @@ function setup() {
 			twist: PI * .15,
 			scale: 1.4
 		}
-		
+
 	];
 
 	makeControls(sphereFrac);
@@ -110,6 +112,8 @@ function setup() {
 
 function draw() {
 	background(255);
+
+	orbitControl();
 
 	sphereFrac.forEach((f) => {
 		PARAMS.forEach((p) => {
