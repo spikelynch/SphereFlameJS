@@ -97,6 +97,7 @@ function setup() {
 			twist: PI * .15,
 			scale: 1.4
 		}
+		
 	];
 
 	makeControls(sphereFrac);
