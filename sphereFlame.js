@@ -103,8 +103,8 @@ function setup() {
 
 	];
 
-	globals['controls'] = makeControlSet('global', GPARAMS, 10, globals)
-	makeControls(10 + GPARAMS.length * VERTSEP + SPACING, sphereFrac);
+	globals['controls'] = makeControlSet('global', GPARAMS, globals)
+	makeFractalControls(sphereFrac);
 
 	strokeWeight(1);
 	stroke(0,0,0);
