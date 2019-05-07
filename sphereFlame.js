@@ -1,6 +1,6 @@
 
 var sphereFrac;
-var drawer;
+var renderer;
 
 var globals;
 var colours;
@@ -23,29 +23,23 @@ var SPACING;
 // wasn't getting called at all because you can't override
 // the graphic primitive (box)
  
-function boxwtf(depth) {
+
+function cubes(depth, radius) {
 	push();
 	translate(0, 0, globals.radius);
-	stroke(50,50,0, 128);
-	strokeWidth(10 * depth);
-	//fill(255, 0, 0, 128);
-	//box(weight * depth * 0.2);
+	fill(colours.fg);
 	box(globals.weight * depth * 0.2);
 	pop();
 }
 
-function box2(depth) {
-	push();
-	translate(0, 0, globals.radius);
-	noStroke();
-	fill(255, 0, 0, 128);
-	box(globals.weight * depth * 0.2);
-	pop();
+function crystals(depth, radius) {
+	fill(colours.fg);
+	box(depth * globals.weight, radius);
 }
 
 
 function renderFrac(frac, depth, scale) {
-	drawer(depth, globals.radius);
+	renderer(depth, globals.radius);
 	if( depth > 0 ) {
 		frac.forEach((trans) => {
 			push();
@@ -98,6 +92,11 @@ function setup() {
 		'end': color('red')
 	};
 
+	var renderers = {
+		'crystals': crystals,
+		'cubes': cubes
+	};
+
 	sphereFrac = [
 		{
 			dip: PI * .3,
@@ -112,20 +111,18 @@ function setup() {
 
 	];
 
+
+	renderer = crystals;
+
 	globals['controls'] = makeSliderControlSet('global', GPARAMS, globals);
 	colours['controls'] = makeColourControlSet('colours', CPARAMS, colours);
+	makeOptionsControl('renderer', 'look', renderers, (v) => { renderer = v });
 	makeFractalControls(sphereFrac);
 
 	strokeWeight(1);
 	stroke(0,0,0);
 	fill(255,255,255);
 
-	drawer = (depth, radius) => {
-		fill(colours.fg);
-		//strokeWeight(globals.weight * depth);
-		box(depth * globals.weight, radius);
-
-	}
 }
 
 

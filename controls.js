@@ -47,3 +47,14 @@ function makeColourControlSet(prefix, paramlist, f) {
 	return ctrls;
 }
 
+function makeOptionsControl(prefix, label, options, callback) {
+	var div = controlSetDiv();
+	var ctrl = createSelect();
+	Object.keys(options).forEach((o) => { ctrl.option(o) });
+	ctrl.changed(() => {
+		var v = ctrl.value();
+		callback(options[v])
+	});
+	addControl(div, prefix, label, ctrl);
+}
+
