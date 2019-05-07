@@ -103,7 +103,7 @@ function setup() {
 
 	];
 
-	globals['controls'] = makeControlSet('global', GPARAMS, globals)
+	globals['controls'] = makeSliderControlSet('global', GPARAMS, globals)
 	makeFractalControls(sphereFrac);
 
 	strokeWeight(1);
