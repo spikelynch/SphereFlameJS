@@ -50,31 +50,9 @@ function renderFrac(frac, depth, scale) {
 }
 
 
-function makeControls(y0, fractal) {
-	var y = y0;
-	for( var i = 0; i < fractal.length; i++ ) {
-		fractal[i]['controls'] = makeControlSet(FPARAMS, y, fractal[i])
-		y += FPARAMS.length * VERTSEP + SPACING;
-	}
-}
-
-function makeControlSet(paramlist, y0, f) {
-	var ctrls = {};
-	var y = y0;
-	for( var i = 0; i < paramlist.length; i++ ) {
-		var p = paramlist[i];
-		ctrls[p] = createSlider(METAPARAMS[p]['min'], METAPARAMS[p]['max'], f[p], METAPARAMS[p]['step']);
-		ctrls[p].position(XMARGIN, y);
-		ctrls[p].style('width', SLIDERWIDTH);
-		y += VERTSEP;
-	}
-	return ctrls;
-}
-
-
 function setup() {
 
-	createCanvas(800,800,WEBGL);
+	createCanvas(720,640,WEBGL);
 
 	radius = 400;
 	weight = 10;
@@ -87,7 +65,7 @@ function setup() {
 
 	FPARAMS = ['dip', 'twist', 'scale'];
  
- 	GPARAMS = ['depth', 'radius', 'weight' ];
+ 	GPARAMS = ['depth', 'radius' ];
 
 	METAPARAMS = {
 		dip: { min: -PI, max: PI, value: 0, step: 0 },
@@ -100,7 +78,7 @@ function setup() {
 
 	globals = {
 		depth: 8,
-		radius: 400,
+		radius: 360,
 		weight: 10
 	};
 
@@ -118,7 +96,7 @@ function setup() {
 
 	];
 
-	globals['controls'] = makeControlSet(GPARAMS, 10, globals)
+	globals['controls'] = makeControlSet('global', GPARAMS, 10, globals)
 	makeControls(10 + GPARAMS.length * VERTSEP + SPACING, sphereFrac);
 
 	drawer = box;
