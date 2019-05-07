@@ -15,14 +15,19 @@ var XMARGIN;
 var VERTSEP;
 var SPACING;
 
-function box(depth) {
+
+// OK so I get it now - the original version of this function
+// wasn't getting called at all because you can't override
+// the graphic primitive (box)
+ 
+function boxwtf(depth) {
 	push();
 	translate(0, 0, globals.radius);
 	stroke(50,50,0, 128);
 	strokeWidth(10 * depth);
 	//fill(255, 0, 0, 128);
 	//box(weight * depth * 0.2);
-	sphere(globals.weight * depth * 0.2);
+	box(globals.weight * depth * 0.2);
 	pop();
 }
 
@@ -65,7 +70,7 @@ function setup() {
 
 	FPARAMS = ['dip', 'twist', 'scale'];
  
- 	GPARAMS = ['depth', 'radius' ];
+ 	GPARAMS = ['depth', 'radius', 'weight', 'alpha' ];
 
 	METAPARAMS = {
 		dip: { min: -PI, max: PI, value: 0, step: 0 },
@@ -73,13 +78,15 @@ function setup() {
 		scale: { min: 0, max: 2, value: 1, step: 0 },
 		depth: { min: 1, max: 12, value: 8, step: 1 },
 		radius: { min: 0, max: 800, value: 400, step: 1 },
-		weight: { min: 1, max: 20, value: 10, step: 1}
+		weight: { min: 0, max: 1.5, value: 1, step: 0 },
+		alpha: { min: 0, max: 255, value: 255, step: 1}
 	};
 
 	globals = {
 		depth: 8,
 		radius: 360,
-		weight: 10
+		weight: 10,
+		alpha: 255
 	};
 
 	sphereFrac = [
@@ -99,7 +106,16 @@ function setup() {
 	globals['controls'] = makeControlSet('global', GPARAMS, 10, globals)
 	makeControls(10 + GPARAMS.length * VERTSEP + SPACING, sphereFrac);
 
-	drawer = box;
+	strokeWeight(1);
+	stroke(0,0,0);
+	fill(255,255,255);
+
+	drawer = (depth, radius) => {
+		fill(255,255,255,globals.alpha);
+		//strokeWeight(globals.weight * depth);
+		box(depth * globals.weight, radius);
+
+	}
 }
 
 
@@ -120,5 +136,4 @@ function draw() {
 	sphereFrac.forEach((f) => { applyControls(FPARAMS, f); });
 
 	renderFrac(sphereFrac, globals.depth, 1.0);
-
 }
