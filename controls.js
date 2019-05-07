@@ -37,10 +37,13 @@ function makeSliderControlSet(prefix, paramlist, f) {
 	return ctrls;
 }
 
-// function makeColourControls(prefix, y0, f) {
-// 	var div = controlSetDiv();
-// 	var cnames = [ 'bg', 'start', 'end' ];
-// 	cnames.forEach((c) => {
-
-// 	})
+function makeColourControlSet(prefix, paramlist, f) {
+	var ctrls = {};
+	var div = controlSetDiv();
+	paramlist.forEach((p) => {
+		ctrls[p] = createColorPicker(f[p]);
+		addControl(div, prefix, p, ctrls[p]);
+	});
+	return ctrls;
+}
 

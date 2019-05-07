@@ -3,12 +3,15 @@ var sphereFrac;
 var drawer;
 
 var globals;
+var colours;
 
 var radius;
 var weight;
 
 
 var FPARAMS;
+var GPARAMS;
+var CPARAMS;
 var METAPARAMS;
 var SLIDERWIDTH;
 var XMARGIN;
@@ -69,8 +72,8 @@ function setup() {
 	SPACING = 8;
 
 	FPARAMS = ['dip', 'twist', 'scale'];
- 
  	GPARAMS = ['depth', 'radius', 'weight', 'alpha' ];
+ 	CPARAMS = ['bg', 'fg'];
 
 	METAPARAMS = {
 		dip: { min: -PI, max: PI, value: 0, step: 0 },
@@ -89,6 +92,12 @@ function setup() {
 		alpha: 255
 	};
 
+	colours = {
+		'bg': color('white'),
+		'fg': color('white'),
+		'end': color('red')
+	};
+
 	sphereFrac = [
 		{
 			dip: PI * .3,
@@ -103,7 +112,8 @@ function setup() {
 
 	];
 
-	globals['controls'] = makeSliderControlSet('global', GPARAMS, globals)
+	globals['controls'] = makeSliderControlSet('global', GPARAMS, globals);
+	colours['controls'] = makeColourControlSet('colours', CPARAMS, colours);
 	makeFractalControls(sphereFrac);
 
 	strokeWeight(1);
@@ -111,7 +121,7 @@ function setup() {
 	fill(255,255,255);
 
 	drawer = (depth, radius) => {
-		fill(255,255,255,globals.alpha);
+		fill(colours.fg);
 		//strokeWeight(globals.weight * depth);
 		box(depth * globals.weight, radius);
 
@@ -125,15 +135,20 @@ function applyControls(params, obj) {
 	})
 }
 
+function applyColourControls(params, obj) {
+	params.forEach((p) => {
+		obj[p] = obj.controls[p].color();
+	})
+}
 
 
 function draw() {
-	background(255);
-
-	orbitControl();
-
 	applyControls(GPARAMS, globals);
+	applyColourControls(CPARAMS, colours);
 	sphereFrac.forEach((f) => { applyControls(FPARAMS, f); });
 
+	background(colours.bg);
+
+	orbitControl();
 	renderFrac(sphereFrac, globals.depth, 1.0);
 }
