@@ -2,11 +2,14 @@
 var sphereFrac;
 var drawer;
 
+var globals;
+
 var radius;
 var weight;
 
-var PARAMS;
-var SETTINGS;
+
+var FPARAMS;
+var METAPARAMS;
 var SLIDERWIDTH;
 var XMARGIN;
 var VERTSEP;
@@ -14,27 +17,27 @@ var SPACING;
 
 function box(depth) {
 	push();
-	translate(0, 0, radius);
+	translate(0, 0, globals.radius);
 	stroke(50,50,0, 128);
 	strokeWidth(10 * depth);
 	//fill(255, 0, 0, 128);
 	//box(weight * depth * 0.2);
-	sphere(weight * depth * 0.2);
+	sphere(globals.weight * depth * 0.2);
 	pop();
 }
 
 function box2(depth) {
 	push();
-	translate(0, 0, radius);
+	translate(0, 0, globals.radius);
 	noStroke();
 	fill(255, 0, 0, 128);
-	box(weight * depth * 0.2);
+	box(globals.weight * depth * 0.2);
 	pop();
 }
 
 
 function renderFrac(frac, depth, scale) {
-	drawer(depth, radius);
+	drawer(depth, globals.radius);
 	if( depth > 0 ) {
 		frac.forEach((trans) => {
 			push();
@@ -47,20 +50,20 @@ function renderFrac(frac, depth, scale) {
 }
 
 
-function makeControls(fractal) {
-	var y = 10;
+function makeControls(y0, fractal) {
+	var y = y0;
 	for( var i = 0; i < fractal.length; i++ ) {
-		fractal[i]['controls'] = makeControlSet(y, fractal[i])
-		y += PARAMS.length * VERTSEP + SPACING;
+		fractal[i]['controls'] = makeControlSet(FPARAMS, y, fractal[i])
+		y += FPARAMS.length * VERTSEP + SPACING;
 	}
 }
 
-function makeControlSet(y0, f) {
+function makeControlSet(paramlist, y0, f) {
 	var ctrls = {};
 	var y = y0;
-	for( var i = 0; i < PARAMS.length; i++ ) {
-		var p = PARAMS[i];
-		ctrls[p] = createSlider(SETTINGS[p]['min'], SETTINGS[p]['max'], f[p], 0);
+	for( var i = 0; i < paramlist.length; i++ ) {
+		var p = paramlist[i];
+		ctrls[p] = createSlider(METAPARAMS[p]['min'], METAPARAMS[p]['max'], f[p], METAPARAMS[p]['step']);
 		ctrls[p].position(XMARGIN, y);
 		ctrls[p].style('width', SLIDERWIDTH);
 		y += VERTSEP;
@@ -76,16 +79,29 @@ function setup() {
 	radius = 400;
 	weight = 10;
 
+
 	SLIDERWIDTH = '200px';
 	VERTSEP = 20;
 	XMARGIN = 10;
 	SPACING = 8;
 
-	PARAMS = ['dip', 'twist', 'scale'];
-	SETTINGS = {
-		dip: { min: 0, max: PI, value: 0 },
-		twist: { min: 0, max: PI, value: 0 },
-		scale: { min: 0, max: 2, value: 1 }
+	FPARAMS = ['dip', 'twist', 'scale'];
+ 
+ 	GPARAMS = ['depth', 'radius', 'weight' ];
+
+	METAPARAMS = {
+		dip: { min: -PI, max: PI, value: 0, step: 0 },
+		twist: { min: -PI, max: PI, value: 0, step: 0 },
+		scale: { min: 0, max: 2, value: 1, step: 0 },
+		depth: { min: 1, max: 12, value: 8, step: 1 },
+		radius: { min: 0, max: 800, value: 400, step: 1 },
+		weight: { min: 1, max: 20, value: 10, step: 1}
+	};
+
+	globals = {
+		depth: 8,
+		radius: 400,
+		weight: 10
 	};
 
 	sphereFrac = [
@@ -102,11 +118,18 @@ function setup() {
 
 	];
 
-	makeControls(sphereFrac);
+	globals['controls'] = makeControlSet(GPARAMS, 10, globals)
+	makeControls(10 + GPARAMS.length * VERTSEP + SPACING, sphereFrac);
 
 	drawer = box;
 }
 
+
+function applyControls(params, obj) {
+	params.forEach((p) => {
+		obj[p] = obj.controls[p].value();
+	})
+}
 
 
 
@@ -115,12 +138,10 @@ function draw() {
 
 	orbitControl();
 
-	sphereFrac.forEach((f) => {
-		PARAMS.forEach((p) => {
-			f[p] = f.controls[p].value();
-		});
-	});
+	applyControls(GPARAMS, globals);
+	console.log(globals);
+	sphereFrac.forEach((f) => { applyControls(FPARAMS, f); });
 
-	renderFrac(sphereFrac, 8, 1.0);
+	renderFrac(sphereFrac, globals.depth, 1.0);
 
 }
