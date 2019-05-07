@@ -117,7 +117,6 @@ function draw() {
 	orbitControl();
 
 	applyControls(GPARAMS, globals);
-	console.log(globals);
 	sphereFrac.forEach((f) => { applyControls(FPARAMS, f); });
 
 	renderFrac(sphereFrac, globals.depth, 1.0);
