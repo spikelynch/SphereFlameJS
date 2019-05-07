@@ -21,6 +21,7 @@ div#controls {
 div#header {
 	padding: 5px;
 	margin: 5px;
+	background-color: #eee;
 }
 
 div.controlset {
