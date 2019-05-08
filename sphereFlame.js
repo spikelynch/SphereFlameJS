@@ -137,9 +137,9 @@ function setup() {
 	};
 
 	colours = {
-		'bg': color('#eeeeee'),
-		'fg1': color('#e9b7b7'),
-		'fg2': color('#b7e9b7'),
+		'bg': color(145,214,238),
+		'fg1': color(104,102,225),
+		'fg2': color(231,53,216),
 		'light': color('#ffffff')
 	};
 
