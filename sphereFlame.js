@@ -28,7 +28,7 @@ function crystals(depth, radius) {
 	stroke(0,0,0);
 	strokeWeight(1);
 	fill(fgLerp(depth / globals.depth));
-	box(depth * globals.weight * .1, radius * 1.414);
+	box(depthSize(depth) * 0.1, radius * 1.414);
 }
 
 function points(depth, radius) {
@@ -116,7 +116,7 @@ function setup() {
 		dip: { min: 0, max: PI, value: 0, step: 0 },
 		twist: { min: 0, max: PI, value: 0, step: 0 },
 		scale: { min: 0, max: 1.2, value: 1, step: 0 },
-		depth: { min: 1, max: 16, value: 8, step: 1 },
+		depth: { min: 1, max: 12, value: 8, step: 1 },
 		radius: { min: 0, max: 480, value: 240, step: 1 },
 		points: { min: 0, max: .2, value: .05, step: 0 },
 		weight: { min: -1, max: 1, value: 0, step: 0 },
