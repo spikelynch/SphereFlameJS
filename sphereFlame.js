@@ -27,13 +27,13 @@ function cubes(depth, radius) {
 	push();
 	noStroke();
 	translate(0, 0, globals.radius);
-	fgFill(depth / globals.depth);
+	fill(fgLerp(depth / globals.depth));
 	box(depthSize(depth));
 	pop();
 }
 
 function crystals(depth, radius) {
-	fgFill(depth / globals.depth);
+	fill(fgLerp(depth / globals.depth));
 	box(depth * globals.weight * .1, radius * 1.414);
 }
 
@@ -41,10 +41,21 @@ function spheres(depth, radius) {
 	push();
 	noStroke();
 	translate(0, 0, globals.radius);
-	fgFill(depth / globals.depth);
+	fill(fgLerp(depth / globals.depth));
 	sphere(depthSize(depth));
 	pop();
 }
+
+function points(depth, radius) {
+	push();
+	noStroke();
+	translate(0, 0, globals.radius);
+	strokeWeight(depthSize(depth));
+	stroke(fgLerp(depth / globals.depth));
+	point(0, 0, 0);
+	pop();
+}
+
 
 function depthSize(depth) {
 	return globals.weight * sqrt(depth);
@@ -90,7 +101,7 @@ function setup() {
 		dip: { min: 0, max: PI, value: 0, step: 0 },
 		twist: { min: 0, max: PI, value: 0, step: 0 },
 		scale: { min: 0, max: 2, value: 1, step: 0 },
-		depth: { min: 1, max: 12, value: 8, step: 1 },
+		depth: { min: 1, max: 16, value: 8, step: 1 },
 		radius: { min: 0, max: 480, value: 240, step: 1 },
 		weight: { min: 0, max: 80, value: 20, step: 0 },
 		alpha: { min: 0, max: 255, value: 255, step: 1},
@@ -117,6 +128,7 @@ function setup() {
 
 	var renderers = {
 		'crystals': crystals,
+		'points': points,
 		'cubes': cubes,
 		'spheres': spheres
 	};
