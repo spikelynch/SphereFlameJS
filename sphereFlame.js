@@ -3,7 +3,6 @@ var sphereFrac;
 var renderer;
 
 var globals;
-var colours;
 
 var radius;
 var weight;
@@ -17,9 +16,6 @@ var SLIDERWIDTH;
 var XMARGIN;
 var VERTSEP;
 var SPACING;
-var DIRLIGHTX;
-var DIRLIGHTY;
-var DIRLIGHTZ;	
 
 
 // OK so I get it now - the original version of this function
@@ -31,13 +27,13 @@ function cubes(depth, radius) {
 	push();
 	noStroke();
 	translate(0, 0, globals.radius);
-	fgAlpha();
+	fgFill(depth / globals.depth);
 	box(depthSize(depth));
 	pop();
 }
 
 function crystals(depth, radius) {
-	fgAlpha();
+	fgFill(depth / globals.depth);
 	box(depth * globals.weight * .1, radius * 1.414);
 }
 
@@ -45,19 +41,13 @@ function spheres(depth, radius) {
 	push();
 	noStroke();
 	translate(0, 0, globals.radius);
-	fgAlpha();
+	fgFill(depth / globals.depth);
 	sphere(depthSize(depth));
 	pop();
 }
 
 function depthSize(depth) {
 	return globals.weight * sqrt(depth);
-}
-
-function fgAlpha() {
-	var c = color(colours.fg);
-	c.setAlpha(lighting.alpha);
-	fill(c);
 }
 
 
@@ -94,7 +84,7 @@ function setup() {
 	FPARAMS = ['dip', 'twist', 'scale'];
  	GPARAMS = ['depth', 'radius', 'weight'];
  	LPARAMS = ['balance', 'alpha'];
- 	CPARAMS = ['bg', 'fg', 'light'];
+ 	CPARAMS = ['bg', 'fg1', 'fg2' ];
 
 	METAPARAMS = {
 		dip: { min: 0, max: PI, value: 0, step: 0 },
@@ -120,7 +110,8 @@ function setup() {
 
 	colours = {
 		'bg': color('#eeeeee'),
-		'fg': color('#e9b7b7'),
+		'fg1': color('#e9b7b7'),
+		'fg2': color('#b7e9b7'),
 		'light': color('#ffffff')
 	};
 
@@ -153,6 +144,8 @@ function setup() {
 	makeOptionsControl('renderer', 'look', renderers, (v) => { renderer = v });
 	makeFractalControls(sphereFrac);
 
+	//colorMode(HSB);
+
 	strokeWeight(1);
 	stroke(0,0,0);
 	fill(255,255,255);
@@ -160,16 +153,6 @@ function setup() {
 
 }
 
-function doLighting() {
-	var c = color(colours.light);
-	var r = red(c);
-	var g = green(c);
-	var b = blue(c);
-	var d = lighting.balance;
-	var a = 1 - d;
-	ambientLight(r * a, g * a, b * a);
-	directionalLight(r * d, g * d, b * d, DIRLIGHTX, DIRLIGHTY, DIRLIGHTZ); 
-}
 
 
 function applyControls(params, obj) {
