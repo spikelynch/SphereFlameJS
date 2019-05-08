@@ -16,7 +16,7 @@ function box(depth) {
 }
 
 function renderFrac(frac, depth, scale) {
-	drawer(depth, radius);
+	drawer(depth * 4, radius);
 	if( depth > 0 ) {
 		frac.forEach((trans) => {
 			push();
@@ -31,10 +31,15 @@ function renderFrac(frac, depth, scale) {
 
 function setup() {
 
-	createCanvas(windowWidth,windowHeight,WEBGL);
+	createCanvas(3000,3000,WEBGL);
 
-	radius = 400;
+//	radius = 400;
+//	weight = 10;
+
+	radius = 1800;
 	weight = 10;
+	strokew = 4;
+
 
 	sphereFrac = [
 		{
@@ -48,6 +53,8 @@ function setup() {
 			scale: 1.4
 		}
 	];
+
+	strokeWeight(strokew);
 
 	drawer = box;
 }
