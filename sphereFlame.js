@@ -5,7 +5,7 @@ var renderer;
 var globals;
 
 var radius;
-var weight;
+var depthSize;
 
 
 var FPARAMS;
@@ -23,6 +23,30 @@ var SPACING;
 // the graphic primitive (box)
  
 
+
+function crystals(depth, radius) {
+	stroke(0,0,0);
+	strokeWeight(1);
+	fill(fgLerp(depth / globals.depth));
+	box(depth * globals.weight * .1, radius * 1.414);
+}
+
+function points(depth, radius) {
+	push();
+	translate(0, 0, globals.radius);
+	strokeWeight(depthSize(depth) * 2);
+	stroke(fgLerp(depth / globals.depth));
+	point(0, 0, 0);
+	pop();
+}
+
+function rays(depth, radius) {
+	strokeWeight(depthSize(depth) * 2);
+	stroke(fgLerp(depth / globals.depth));
+	line(0, 0, 0, 0, 0, globals.radius);
+}
+
+
 function cubes(depth, radius) {
 	push();
 	noStroke();
@@ -30,11 +54,6 @@ function cubes(depth, radius) {
 	fill(fgLerp(depth / globals.depth));
 	box(depthSize(depth));
 	pop();
-}
-
-function crystals(depth, radius) {
-	fill(fgLerp(depth / globals.depth));
-	box(depth * globals.weight * .1, radius * 1.414);
 }
 
 function spheres(depth, radius) {
@@ -46,20 +65,16 @@ function spheres(depth, radius) {
 	pop();
 }
 
-function points(depth, radius) {
+function discs(depth, radius) {
 	push();
 	noStroke();
 	translate(0, 0, globals.radius);
-	strokeWeight(depthSize(depth));
-	stroke(fgLerp(depth / globals.depth));
-	point(0, 0, 0);
+	fill(fgLerp(depth / globals.depth));
+	circle(0, 0, depthSize(depth) * 2);
 	pop();
 }
 
 
-function depthSize(depth) {
-	return globals.weight * sqrt(depth);
-}
 
 
 function renderFrac(frac, depth, scale) {
@@ -81,7 +96,7 @@ function setup() {
 	createCanvas(720,640,WEBGL);
 
 	radius = 400;
-	weight = 10;
+	w0 = 20;
 
 	DIRLIGHTX = -1;
 	DIRLIGHTY = 1;
@@ -93,17 +108,18 @@ function setup() {
 	SPACING = 8;
 
 	FPARAMS = ['dip', 'twist', 'scale'];
- 	GPARAMS = ['depth', 'radius', 'weight'];
+ 	GPARAMS = ['depth', 'radius', 'points', 'weight'];
  	LPARAMS = ['balance', 'alpha'];
  	CPARAMS = ['bg', 'fg1', 'fg2' ];
 
 	METAPARAMS = {
 		dip: { min: 0, max: PI, value: 0, step: 0 },
 		twist: { min: 0, max: PI, value: 0, step: 0 },
-		scale: { min: 0, max: 2, value: 1, step: 0 },
+		scale: { min: 0, max: 1.2, value: 1, step: 0 },
 		depth: { min: 1, max: 16, value: 8, step: 1 },
 		radius: { min: 0, max: 480, value: 240, step: 1 },
-		weight: { min: 0, max: 80, value: 20, step: 0 },
+		points: { min: 0, max: .2, value: .05, step: 0 },
+		weight: { min: -1, max: 1, value: 0, step: 0 },
 		alpha: { min: 0, max: 255, value: 255, step: 1},
 		balance: { min: 0, max: 1, value: 0, step: 0 }
 	};
@@ -111,7 +127,8 @@ function setup() {
 	globals = {
 		depth: 8,
 		radius: 240,
-		weight: 20
+		points: .1,
+		weight: 0
 	};
 
 	lighting = {
@@ -129,8 +146,10 @@ function setup() {
 	var renderers = {
 		'crystals': crystals,
 		'points': points,
+		'rays': rays,
 		'cubes': cubes,
-		'spheres': spheres
+		'spheres': spheres,
+		'discs': discs
 	};
 
 	sphereFrac = [
@@ -185,6 +204,13 @@ function draw() {
 	applyControls(LPARAMS, lighting);
 	applyColourControls(CPARAMS, colours);
 	sphereFrac.forEach((f) => { applyControls(FPARAMS, f); });
+
+	var s0 = globals.points * globals.radius;
+
+	depthSize = (d) => {
+		return s0 + globals.weight * s0 * (d - globals.depth / 2) / globals.depth;
+	};
+ 
 
 	background(colours.bg);
 	doLighting();
