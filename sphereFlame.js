@@ -82,6 +82,7 @@ function renderFrac(frac, depth, scale) {
 	if( depth > 0 ) {
 		frac.forEach((trans) => {
 			push();
+			translate(0, 0, trans.expand * globals.radius / globals.depth);
 			rotateX(scale * trans.twist);
 			rotateY(scale * trans.dip);
 			renderFrac(frac, depth - 1, trans.scale * scale);
@@ -107,7 +108,7 @@ function setup() {
 	XMARGIN = 10;
 	SPACING = 8;
 
-	FPARAMS = ['dip', 'twist', 'scale'];
+	FPARAMS = ['dip', 'twist', 'scale', 'expand' ];
  	GPARAMS = ['depth', 'radius', 'points', 'weight'];
  	LPARAMS = ['balance', 'alpha'];
  	CPARAMS = ['bg', 'fg1', 'fg2' ];
@@ -115,7 +116,8 @@ function setup() {
 	METAPARAMS = {
 		dip: { min: 0, max: PI, value: 0, step: 0 },
 		twist: { min: 0, max: PI, value: 0, step: 0 },
-		scale: { min: 0, max: 1.2, value: 1, step: 0 },
+		scale: { min: 0, max: 2, value: 1, step: 0 },
+		expand: { min: -2, max: 2, value: 0, step: 0 },
 		depth: { min: 1, max: 12, value: 8, step: 1 },
 		radius: { min: 0, max: 480, value: 240, step: 1 },
 		points: { min: 0, max: .2, value: .05, step: 0 },
@@ -156,12 +158,14 @@ function setup() {
 		{
 			dip: PI * .3,
 			twist: PI * .1,
-			scale: 0.8
+			scale: 0.8,
+			expand: 0
 		},
 		{
 			dip: PI * -.2,
 			twist: PI * .15,
-			scale: 1.4
+			scale: 1.4,
+			expand: 0
 		}
 
 	];
